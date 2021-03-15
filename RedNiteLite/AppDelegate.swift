@@ -1,36 +1,64 @@
-//
-//  AppDelegate.swift
-//  RedNiteLite
-//
-//  Created by Garth Snyder on 2021-03-14.
-//
+import UIKit    //    RedNiteLite   created by Garth Snyder
 
-import UIKit
-
-@main
-class AppDelegate: UIResponder, UIApplicationDelegate {
-
-
-
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+@UIApplicationMain class AppDelegate: UIResponder, UIApplicationDelegate {
+    
+    var window: UIWindow?
+    var nightLightViewController = UIViewController()
+    lazy var orientationLock = UIInterfaceOrientationMask.all // set orientations you want allowed by default
+    
+    func application(_ application: UIApplication,
+                     willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        
+        window = UIWindow(frame: UIScreen.main.bounds)
+        window?.backgroundColor = .red // will likely add a nicer, custom (researched) optimal red color
+        window?.makeKeyAndVisible()
+        
+        let backgroundVC = UIViewController()
+        backgroundVC.view.backgroundColor = window?.backgroundColor /// must match window's background color, for rotating landscape->portrait
+        
+        UINavigationBar.appearance().barTintColor = .red
+        UINavigationBar.appearance().shadowImage = UIImage()
         return true
     }
-
-    // MARK: UISceneSession Lifecycle
-
-    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-        // Called when a new scene session is being created.
-        // Use this method to select a configuration to create the new scene with.
-        return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
+    
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+        let navController = UINavigationController(rootViewController: nightLightViewController)
+        window?.rootViewController = navController
+        
+        AppUtility.lockOrientation(.landscape, andRotateTo: .landscapeRight)    // locked to landscape to hide status bar for cleaner look
+        return true
     }
-
-    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
-        // Called when the user discards a scene session.
-        // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
-        // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
-    }
-
-
 }
+
+extension AppDelegate {
+    
+    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+        return orientationLock
+    }
+}
+
+struct AppUtility {
+    
+    static func lockOrientation(_ orientation: UIInterfaceOrientationMask) {
+        
+        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+            appDelegate.orientationLock = orientation
+        }
+        else {
+            print("[AppUtility] error casting app delegate instance")
+        }
+    }
+    
+    static func lockOrientation(_ orientation: UIInterfaceOrientationMask, andRotateTo rotateOrientation: UIInterfaceOrientation) {
+        
+        self.lockOrientation(orientation)
+        UIDevice.current.setValue(rotateOrientation.rawValue, forKey: "orientation")
+    }
+    
+}
+
+
+//    This is definitely the shortest useful iOS app I've ever written      created by Garth Snyder
 
