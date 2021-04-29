@@ -27,7 +27,7 @@ import UIKit    //    RedNiteLite   created by Garth Snyder
         let navController = UINavigationController(rootViewController: nightLightViewController)
         window?.rootViewController = navController
         
-        AppUtility.lockOrientation(.landscape, andRotateTo: .landscapeRight)    // locked to landscape to hide status bar for cleaner look
+        AppUtility.lockOrientation(.portrait, andRotateTo: .portrait)    // locked to landscape to hide status bar for cleaner look
         return true
     }
 }
